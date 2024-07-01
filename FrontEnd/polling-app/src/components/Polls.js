@@ -1,3 +1,4 @@
+// src/components/Polls.js
 
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
@@ -20,10 +21,15 @@ const Polls = () => {
 
     const handleVote = async (pollId, choiceId) => {
         try {
-            await axios.post(`http://localhost:8000/polls/${pollId}/vote/`, { choice_id: choiceId });
+            const response = await axios.post(`http://localhost:8000/polls/${pollId}/vote/`, { choice_id: choiceId });
+            alert(response.data.status);
             fetchPolls(); // Refresh the poll data after voting
         } catch (error) {
-            console.error('Error submitting vote:', error);
+            if (error.response && error.response.data.error) {
+                alert(error.response.data.error);
+            } else {
+                console.error('Error submitting vote:', error);
+            }
         }
     };
 

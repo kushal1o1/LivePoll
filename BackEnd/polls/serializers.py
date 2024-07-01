@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Poll, Choice
+from .models import Poll, Choice ,Vote
 
 class ChoiceSerializer(serializers.ModelSerializer):
     class Meta:
@@ -18,3 +18,7 @@ class PollSerializer(serializers.ModelSerializer):
         for choice_data in choices_data:
             Choice.objects.create(poll=poll, **choice_data)
         return poll
+class VoteSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Vote
+        fields = ['id', 'poll', 'choice', 'user_ip']
