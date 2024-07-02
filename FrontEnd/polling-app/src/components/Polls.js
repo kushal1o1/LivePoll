@@ -1,13 +1,13 @@
-// src/components/Polls.js
-
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
 const Polls = () => {
     const [polls, setPolls] = useState([]);
+    const [votedPolls, setVotedPolls] = useState({});
 
     useEffect(() => {
         fetchPolls();
+        loadVotedPollsFromStorage(); // Load voted polls from localStorage on component mount
     }, []);
 
     const fetchPolls = async () => {
@@ -21,9 +21,10 @@ const Polls = () => {
 
     const handleVote = async (pollId, choiceId) => {
         try {
-            const response = await axios.post(`http://localhost:8000/polls/${pollId}/vote/`, { choice_id: choiceId });
-            alert(response.data.status);
-            fetchPolls(); // Refresh the poll data after voting
+            await axios.post(`http://localhost:8000/polls/${pollId}/vote/`, { choice_id: choiceId });
+            const updatedVotedPolls = { ...votedPolls, [pollId]: choiceId };
+            setVotedPolls(updatedVotedPolls);
+            saveVotedPollsToStorage(updatedVotedPolls); // Save updated voted polls to localStorage
         } catch (error) {
             if (error.response && error.response.data.error) {
                 alert(error.response.data.error);
@@ -33,24 +34,77 @@ const Polls = () => {
         }
     };
 
+    const calculatePercentage = (choiceVotes, totalVotes) => {
+        return totalVotes === 0 ? 0 : ((choiceVotes / totalVotes) * 100).toFixed(1);
+    };
+
+    const loadVotedPollsFromStorage = () => {
+        const storedVotedPolls = localStorage.getItem('votedPolls');
+        if (storedVotedPolls) {
+            setVotedPolls(JSON.parse(storedVotedPolls));
+        }
+    };
+
+    const saveVotedPollsToStorage = (updatedVotedPolls) => {
+        localStorage.setItem('votedPolls', JSON.stringify(updatedVotedPolls));
+    };
+
     return (
-        <div>
-            <h1>Vote on Polls</h1>
-            {polls.map((poll) => (
-                <div key={poll.id}>
-                    <h3>{poll.question}</h3>
-                    <ul>
-                        {poll.choices.map((choice) => (
-                            <li key={choice.id}>
-                                {choice.choice_text} - {choice.votes} votes
-                                <button onClick={() => handleVote(poll.id, choice.id)}>Vote</button>
-                            </li>
-                        ))}
-                    </ul>
+        <div className="poll-container">
+            <h1 className="title">Vote on Polls</h1>
+            {polls.length > 0 && (
+                <div className={`poll-section latest ${votedPolls[polls[0].id] ? 'voted' : ''}`}>
+                    <h3 className="section-title">Latest Poll</h3>
+                    <div key={polls[0].id} className="poll">
+                        <div className="poll-header">
+                            <h3 className="poll-question">{polls[0].question}</h3>
+                        </div>
+                        <ul className="choices-list">
+                            {polls[0].choices.map((choice) => {
+                                const totalVotes = polls[0].choices.reduce((acc, c) => acc + c.votes, 0);
+                                const percentage = calculatePercentage(choice.votes, totalVotes);
+                                const isVoted = votedPolls[polls[0].id] === choice.id;
+                                return (
+                                    <li key={choice.id} className="choice-item" onClick={() => handleVote(polls[0].id, choice.id)}>
+                                        <span>{choice.choice_text}</span>
+                                        <div className="vote-result" style={{ width: `${percentage}%`, backgroundColor: isVoted ? 'green' : ' #1877f2' }}>
+                                            {percentage}%
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
                 </div>
-            ))}
+            )}
+            <div className="poll-section history">
+                <h3 className="section-title">Poll History</h3>
+                {polls.map((poll) => (
+                    <div key={poll.id} className="poll">
+                        <div className="poll-header">
+                            <h3 className="poll-question">{poll.question}</h3>
+                        </div>
+                        <ul className="choices-list">
+                            {poll.choices.map((choice) => {
+                                const totalVotes = poll.choices.reduce((acc, c) => acc + c.votes, 0);
+                                const percentage = calculatePercentage(choice.votes, totalVotes);
+                                const isVoted = votedPolls[poll.id] === choice.id;
+                                return (
+                                    <li key={choice.id} className="choice-item">
+                                        <span>{choice.choice_text}</span>
+                                        <div className="vote-result" style={{ width: `${percentage}%`, backgroundColor: isVoted ? 'green' : ' #1877f2' }}>
+                                            {percentage}%
+                                        </div>
+                                    </li>
+                                );
+                            })}
+                        </ul>
+                    </div>
+                ))}
+            </div>
         </div>
     );
 };
 
 export default Polls;
+
