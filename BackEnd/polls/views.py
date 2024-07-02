@@ -7,7 +7,7 @@ from .serializers import PollSerializer, ChoiceSerializer
 
 
 class PollViewSet(viewsets.ModelViewSet):
-    queryset = Poll.objects.all()
+    queryset = Poll.objects.all().order_by('-created_at')
     serializer_class = PollSerializer
 
     @action(detail=True, methods=['post'])
