@@ -12,7 +12,8 @@ const Polls = () => {
 
     const fetchPolls = async () => {
         try {
-            const response = await axios.get('http://localhost:8000/polls/');
+            const response = await axios.get('https://livepoll.pythonanywhere.com/polls/');
+            alert(response);
             setPolls(response.data);
         } catch (error) {
             console.error('Error fetching polls:', error);
@@ -21,7 +22,7 @@ const Polls = () => {
 
     const handleVote = async (pollId, choiceId) => {
         try {
-            await axios.post(`http://localhost:8000/polls/${pollId}/vote/`, { choice_id: choiceId });
+            await axios.post(`https://livepoll.pythonanywhere.com/polls/${pollId}/vote/`, { choice_id: choiceId });
             const updatedVotedPolls = { ...votedPolls, [pollId]: choiceId };
             setVotedPolls(updatedVotedPolls);
             saveVotedPollsToStorage(updatedVotedPolls); // Save updated voted polls to localStorage

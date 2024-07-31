@@ -8,7 +8,7 @@ function App() {
     return (
         <div className="App">
             <header className="App-header">
-                <h1>Polling App</h1>
+                <h1 className="Heading">Polling App</h1>
             </header>
             <main>
                 <Polls />

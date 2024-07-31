@@ -1,5 +1,11 @@
 /* src/components/Polls.css */
 
+.Heading{
+  text-align:center;
+  font-weight:900;
+  font-variant:small-caps;
+  color:#1877f2;
+}
 .poll-container {
   font-family: Arial, sans-serif;
   margin: 20px;
@@ -14,7 +20,7 @@
   text-align: center;
   margin-bottom: 20px;
   font-size: 24px;
-  color: #1877f2;  /* Facebook blue */
+  color: #1877f2;  
 }
 
 .poll-section {
