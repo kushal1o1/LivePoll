@@ -13,7 +13,6 @@ const Polls = () => {
     const fetchPolls = async () => {
         try {
             const response = await axios.get('https://livepoll.pythonanywhere.com/polls/');
-            alert(response);
             setPolls(response.data);
         } catch (error) {
             console.error('Error fetching polls:', error);
