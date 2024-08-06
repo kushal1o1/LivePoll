@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": "poll app",
+  "name": "live polling app",
   "icons": [
     {
       "src": "poll.jpeg",
