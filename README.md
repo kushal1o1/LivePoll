@@ -57,7 +57,7 @@ This project is a polling application that includes a frontend built with React 
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/yourusername/polling-app-frontend.git
+    git clone https://github.com/kushal1o1/LivePoll.git
     cd polling-app-frontend
     ```
 
