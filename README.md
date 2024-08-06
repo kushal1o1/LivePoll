@@ -15,7 +15,7 @@ This project is a polling application that includes a frontend built with React 
 1. **Clone the Repository:**
 
     ```bash
-    git clone https://github.com/yourusername/polling-app-backend.git
+    git clone linkOfrepo
     cd polling-app-backend
     ```
 
